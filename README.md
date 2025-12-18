@@ -29,4 +29,4 @@ Install the repo! (After I complete how to install it in the first place)
 
 ## Resources
 
-Build-instructions [HERE](resources/build-instructions.md)
+`Build-instructions` [HERE](resources/build-instructions.md)
