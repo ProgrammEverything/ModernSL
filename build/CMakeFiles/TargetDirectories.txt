@@ -1,0 +1,3 @@
+/home/programmeverything/projects/pr-sl/build/CMakeFiles/ModernSL.dir
+/home/programmeverything/projects/pr-sl/build/CMakeFiles/edit_cache.dir
+/home/programmeverything/projects/pr-sl/build/CMakeFiles/rebuild_cache.dir

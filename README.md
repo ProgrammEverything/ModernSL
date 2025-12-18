@@ -12,7 +12,7 @@ ModernSL is planned to have continous support until it reaches EOL.
 - [ ] Full support of all SL commands
 - [ ] Pushed onto official apt PPA repository
 - [ ] Version is complete
-- [ ] CMake and build instructions are complete
+- [X] CMake and build instructions are complete
 - [ ] Mannual and other resources are complete
 - [X] Version Under Developement
 
@@ -27,3 +27,6 @@ ModernSL tries to maintain compatibility to the old versions to keep the nostalg
 ## So what are you waiting for??
 Install the repo! (After I complete how to install it in the first place)
 
+## Resources
+
+Build-instructions [HERE](resources/build-instructions.md)
