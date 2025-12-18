@@ -59,8 +59,9 @@
 #define COAL10 "    \\_/   \\_/    \\_/   \\_/    "
 
 #define COALDEL "                              "
-
+// 
 #define LOGOHEIGHT    	 6
+// 
 #define LOGOFUNNEL  	 4
 #define LOGOLENGTH      84
 #define LOGOPATTERNS	 6

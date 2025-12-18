@@ -6,8 +6,8 @@ public:
     Train();
 
     int Draw();
-    int DrawBody(int x);
-    int DrawSmoke();
+    int DrawBody(int x_pos);
+    int DrawSmoke(int y_pos, int x_pos);
 
 private:
     TrainParameters m_params{};

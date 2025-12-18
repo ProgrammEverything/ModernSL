@@ -1,1 +1,0 @@
-/bin/c++ -Wl,--dependency-file=CMakeFiles/ModernSL.dir/link.d CMakeFiles/ModernSL.dir/src/Train.cpp.o CMakeFiles/ModernSL.dir/src/main.cpp.o -o ModernSL  -lncurses
