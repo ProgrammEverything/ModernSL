@@ -3,7 +3,12 @@
 #include "glob_enums.h"
 #include "ncurses.h"
 #include <iostream>
-int my_mvaddstr(int y, int x, char *str)
+#include <unistd.h>
+Train::Train(TerminalSize termSize, Layout calc_layout)
+    : m_termSize(termSize), m_calc_layout(calc_layout)
+{
+}
+int my_mvaddstr(int y, int x, const char *str)
 {
     while (x < 0) { 
         x++; str++; 
@@ -15,12 +20,13 @@ int my_mvaddstr(int y, int x, char *str)
     }
     return OK;
 }
-Train::Train()
+
+int Train::Draw(int frame)
 {
-}
-int Train::Draw()
-{
-    return 0;
+
+    DrawBody( m_calc_layout.getXPos(),m_calc_layout.getYPos(),  frame);
+    
+    return OK;
 }
 /*
 So how does it work?
@@ -33,7 +39,7 @@ A for loop iterates through each level (or row) of the train's height (from 0 to
 Inside the loop:
 
 */
-int Train::DrawBody(int x_pos)
+int Train::DrawBody(int x_pos, int cur_line, int frame)
 {
     static char *train_texture[LOGOPATTERNS][LOGOHEIGHT + 1]
         = {{LOGO1, LOGO2, LOGO3, LOGO4, LWHL11, LWHL12, DELLN},
@@ -51,31 +57,33 @@ int Train::DrawBody(int x_pos)
 
     int y, py1 = 0, py2 = 0, py3 = 0;
 
-    if (x_pos < - LOGOLENGTH)  return ERR;
-    y = (LINES / 2) - (LOGOHEIGHT / 2);
-    // y coordinate to draw the train on
-    // LINES/2 => middle of terminal height
-    // LOGOHEIGHT/2 => half of train height
-    // Reminder: y - NUMBER makes the position go UP not down!
+    // compute the on-screen x for this frame (start at x_pos, move left as frame increases)
+    int draw_x = x_pos - frame;
+    // fully off-screen to the left?
+    if (draw_x < -LOGOLENGTH)  return ERR;
+
+    y = (cur_line / 2) - (LOGOHEIGHT / 2);
+
+    // choose a pattern based on frame to animate wheels; tweak divisor to change speed
+    int pat = (frame / 3) % LOGOPATTERNS;
+    if (pat < 0) pat += LOGOPATTERNS;
+
     for (int lvl = 0; lvl <= LOGOHEIGHT; lvl++) {
-        my_mvaddstr(y + lvl, x_pos, 
-            train_texture
-            [((LOGOLENGTH + x_pos) / 3) %
-                 LOGOPATTERNS][lvl]
-        );
-        my_mvaddstr(y + lvl + py1, x_pos + 21, coal[lvl]);
-        my_mvaddstr(y + lvl + py2, x_pos + 42, car[lvl]);
-        my_mvaddstr(y + lvl + py3, x_pos + 63, car[lvl]);
+        my_mvaddstr(y + lvl, draw_x,
+            train_texture[pat][lvl]);
+        my_mvaddstr(y + lvl + py1, draw_x + 21, coal[lvl]);
+        my_mvaddstr(y + lvl + py1, draw_x + 21 + 7, std::format("{}", frame).c_str());
+        my_mvaddstr(y + lvl + py2, draw_x + 42, car[lvl]);
+        my_mvaddstr(y + lvl + py3, draw_x + 63, car[lvl]);
     }
-    DrawSmoke(y - 1, x_pos + LOGOFUNNEL);
+    // enable smoke drawing using the per-frame draw_x
+    DrawSmoke(y - 1, draw_x + LOGOFUNNEL);
     return OK;
 }
 int Train::DrawSmoke(int y_pos, int x_pos)
 {
-    static Smoke S[100];
-    const int SMOKEPTNS = 16;
-    static int sum = 0;
-    static char *Smoke[2][SMOKEPTNS]
+    constexpr int SMOKEPTNS = 16;
+    static const char *Smokes[2][SMOKEPTNS]
         = {{"(   )", "(    )", "(    )", "(   )", "(  )",
             "(  )" , "( )"   , "( )"   , "()"   , "()"  ,
             "O"    , "O"     , "O"     , "O"    , "O"   ,
@@ -84,28 +92,10 @@ int Train::DrawSmoke(int y_pos, int x_pos)
             "(@@)" , "(@)"   , "(@)"   , "@@"   , "@@"  ,
             "@"    , "@"     , "@"     , "@"    , "@"   ,
             " "                                          }};
-    static char *Eraser[SMOKEPTNS]
-        =  {"     ", "      ", "      ", "     ", "    ",
-            "    " , "   "   , "   "   , "  "   , "  "  ,
-            " "    , " "     , " "     , " "    , " "   ,
-            " "                                          };
-    static int dy[SMOKEPTNS] = { 2,  1, 1, 1, 0, 0, 0, 0, 0, 0,
-                                 0,  0, 0, 0, 0, 0             };
-    static int dx[SMOKEPTNS] = {-2, -1, 0, 1, 1, 1, 1, 1, 2, 2,
-                                 2,  2, 2, 3, 3, 3             };
-
-    if (x_pos % 4 == 0) {
-        for (int i = 0; i < sum; ++i) {
-            my_mvaddstr(S[i].y, S[i].x, Eraser[S[i].ptrn]);
-            S[i].y    -= dy[S[i].ptrn];
-            S[i].x    += dx[S[i].ptrn];
-            S[i].ptrn += (S[i].ptrn < SMOKEPTNS - 1) ? 1 : 0;
-            my_mvaddstr(S[i].y, S[i].x, Smoke[S[i].kind][S[i].ptrn]);
-        }
-        my_mvaddstr(y_pos, x_pos, Smoke[sum % 2][0]);
-        S[sum].y = y_pos;    S[sum].x = x_pos;
-        S[sum].ptrn = 0; S[sum].kind = sum % 2;
-        sum ++;
+    if (x_pos % 4 == 0){
+        Smoke smk;
+        smk.gen_random(y_pos, x_pos);
+        my_mvaddstr(smk.y + 4, smk.x + 4, Smokes[1][smk.kind]);
     }
     return 0;
 }

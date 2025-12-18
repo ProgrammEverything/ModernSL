@@ -6,6 +6,7 @@
 #include <curses.h>
 #include <signal.h>
 #include <unistd.h>
+#include "assets.h"
 /*
 Basic structure:
     The train is drawn using a for loop which loops through reverse of x.
@@ -21,19 +22,33 @@ int main(){
     nodelay(stdscr, TRUE);
     leaveok(stdscr, TRUE);
     scrollok(stdscr, FALSE);
-
-    Train t{};
-
-    while (true){
-    for (int x = COLS - 1;; x--) {
+    int i = 0;
+    
+    Layout func;
+    int cols = COLS;
+    int lns = LINES;
+    func.getXPos = [&]() {
+        return cols ;
         
-        if (t.DrawBody(x) == ERR) break;
-        getch();
-        refresh();
-        usleep(50000);
+    };
+    func.getYPos = [&]() {
+
+        return lns ;
+    };
+    Train t(TerminalSize{LINES, COLS}, func);
+    
+    while (true){
+        i += 1;
+        for (int i = 0; i<=cols; i++){
+            t.Draw(i);
+            mvcur(0, COLS, LINES, 0);
+            refresh();
+            getch();
+            usleep(20000);
+            
+        }
+        erase();
     }
     mvcur(0, COLS - 1, LINES - 1, 0);
-}
-    
     endwin();
 }
