@@ -1,5 +1,3 @@
-// ...existing code...
-#pragma once
 /*========================================
  *    sl.h: SL version 5.02
  *	Copyright 1993,2002,2014
@@ -9,143 +7,144 @@
  *========================================
  */
 
-constexpr int D51HEIGHT = 10;
-constexpr int D51FUNNEL = 7;
-constexpr int D51LENGTH = 83;
-constexpr int D51PATTERNS = 6;
+#define D51HEIGHT	10
+#define D51FUNNEL	 7
+#define D51LENGTH	83
+#define D51PATTERNS	 6
 
-constexpr const char* D51STR1 = "      ====        ________                ___________ =";
-constexpr const char* D51STR2 = "  _D _|  |_______/        \\__I_I_____===__|_________| =";
-constexpr const char* D51STR3 = "   |(_)---  |   H\\________/ |   |        =|___ ___|   =";
-constexpr const char* D51STR4 = "   /     |  |   H  |  |     |   |         ||_| |_||   =";
-constexpr const char* D51STR5 = "  |      |  |   H  |__--------------------| [___] |   =";
-constexpr const char* D51STR6 = "  | ________|___H__/__|_____/[][]~\\_______|       |   =";
-constexpr const char* D51STR7 = "  |/ |   |-----------I_____I [][] []  D   |=======|__ =";
 
-constexpr const char* D51WHL11 = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ =";
-constexpr const char* D51WHL12 = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        =";
-constexpr const char* D51WHL13 = "  \\_/      \\O=====O=====O=====O_/      \\_/            =";
+#define D51STR1  "      ====        ________                ___________ "
+#define D51STR2  "  _D _|  |_______/        \\__I_I_____===__|_________| "
+#define D51STR3  "   |(_)---  |   H\\________/ |   |        =|___ ___|   "
+#define D51STR4  "   /     |  |   H  |  |     |   |         ||_| |_||   "
+#define D51STR5  "  |      |  |   H  |__--------------------| [___] |   "
+#define D51STR6  "  | ________|___H__/__|_____/[][]~\\_______|       |   "
+#define D51STR7  "  |/ |   |-----------I_____I [][] []  D   |=======|__ "
 
-constexpr const char* D51WHL21 = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ =";
-constexpr const char* D51WHL22 = " |/-=|___|=O=====O=====O=====O   |_____/~\\___/        =";
-constexpr const char* D51WHL23 = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            =";
+#define D51WHL11 "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ "
+#define D51WHL12 " |/-=|___|=    ||    ||    ||    |_____/~\\___/        "
+#define D51WHL13 "  \\_/      \\O=====O=====O=====O_/      \\_/            "
 
-constexpr const char* D51WHL31 = "__/ =| o |=-O=====O=====O=====O \\ ____Y___________|__ =";
-constexpr const char* D51WHL32 = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        =";
-constexpr const char* D51WHL33 = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            =";
+#define D51WHL21 "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ "
+#define D51WHL22 " |/-=|___|=O=====O=====O=====O   |_____/~\\___/        "
+#define D51WHL23 "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            "
 
-constexpr const char* D51WHL41 = "__/ =| o |=-~O=====O=====O=====O\\ ____Y___________|__ =";
-constexpr const char* D51WHL42 = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        =";
-constexpr const char* D51WHL43 = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            =";
+#define D51WHL31 "__/ =| o |=-O=====O=====O=====O \\ ____Y___________|__ "
+#define D51WHL32 " |/-=|___|=    ||    ||    ||    |_____/~\\___/        "
+#define D51WHL33 "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            "
 
-constexpr const char* D51WHL51 = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ =";
-constexpr const char* D51WHL52 = " |/-=|___|=   O=====O=====O=====O|_____/~\\___/        =";
-constexpr const char* D51WHL53 = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            =";
+#define D51WHL41 "__/ =| o |=-~O=====O=====O=====O\\ ____Y___________|__ "
+#define D51WHL42 " |/-=|___|=    ||    ||    ||    |_____/~\\___/        "
+#define D51WHL43 "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            "
 
-constexpr const char* D51WHL61 = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ =";
-constexpr const char* D51WHL62 = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        =";
-constexpr const char* D51WHL63 = "  \\_/      \\_O=====O=====O=====O/      \\_/            =";
+#define D51WHL51 "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ "
+#define D51WHL52 " |/-=|___|=   O=====O=====O=====O|_____/~\\___/        "
+#define D51WHL53 "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            "
 
-constexpr const char* D51DEL  = "                                                      =";
+#define D51WHL61 "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ "
+#define D51WHL62 " |/-=|___|=    ||    ||    ||    |_____/~\\___/        "
+#define D51WHL63 "  \\_/      \\_O=====O=====O=====O/      \\_/            "
 
-constexpr const char* COAL01 = "                              =";
-constexpr const char* COAL02 = "                              =";
-constexpr const char* COAL03 = "    _________________         =";
-constexpr const char* COAL04 = "   _|                \\_____A  =";
-constexpr const char* COAL05 = " =|                        |  =";
-constexpr const char* COAL06 = " -|                        |  =";
-constexpr const char* COAL07 = "__|________________________|_ =";
-constexpr const char* COAL08 = "|__________________________|_ =";
-constexpr const char* COAL09 = "   |_D__D__D_|  |_D__D__D_|   =";
-constexpr const char* COAL10 = "    \\_/   \\_/    \\_/   \\_/    =";
+#define D51DEL   "                                                      "
 
-constexpr const char* COALDEL = "                              =";
+#define COAL01 "                              "
+#define COAL02 "                              "
+#define COAL03 "    _________________         "
+#define COAL04 "   _|                \\_____A  "
+#define COAL05 " =|                        |  "
+#define COAL06 " -|                        |  "
+#define COAL07 "__|________________________|_ "
+#define COAL08 "|__________________________|_ "
+#define COAL09 "   |_D__D__D_|  |_D__D__D_|   "
+#define COAL10 "    \\_/   \\_/    \\_/   \\_/    "
 
-constexpr int LOGOHEIGHT = 6;
-constexpr int LOGOFUNNEL = 4;
-constexpr int LOGOLENGTH = 84;
-constexpr int LOGOPATTERNS = 6;
+#define COALDEL "                              "
 
-constexpr const char* LOGO1 = "     ++      +------ ";
-constexpr const char* LOGO2 = "     ||      |+-+ |  ";
-constexpr const char* LOGO3 = "   /---------|| | |  ";
-constexpr const char* LOGO4 = "  + ========  +-+ |  ";
+#define LOGOHEIGHT    	 6
+#define LOGOFUNNEL  	 4
+#define LOGOLENGTH      84
+#define LOGOPATTERNS	 6
 
-constexpr const char* LWHL11 = " _|--O========O~\\-+  ";
-constexpr const char* LWHL12 = "//// \\_/      \\_/    ";
+#define LOGO1  "     ++      +------ "
+#define LOGO2  "     ||      |+-+ |  "
+#define LOGO3  "   /---------|| | |  "
+#define LOGO4  "  + ========  +-+ |  "
 
-constexpr const char* LWHL21 = " _|--/O========O\\-+  ";
-constexpr const char* LWHL22 = "//// \\_/      \\_/    ";
+#define LWHL11 " _|--O========O~\\-+  "
+#define LWHL12 "//// \\_/      \\_/    "
 
-constexpr const char* LWHL31 = " _|--/~O========O-+  ";
-constexpr const char* LWHL32 = "//// \\_/      \\_/    ";
+#define LWHL21 " _|--/O========O\\-+  "
+#define LWHL22 "//// \\_/      \\_/    "
 
-constexpr const char* LWHL41 = " _|--/~\\------/~\\-+  ";
-constexpr const char* LWHL42 = "//// \\_O========O    ";
+#define LWHL31 " _|--/~O========O-+  "
+#define LWHL32 "//// \\_/      \\_/    "
 
-constexpr const char* LWHL51 = " _|--/~\\------/~\\-+  ";
-constexpr const char* LWHL52 = "//// \\O========O/    ";
+#define LWHL41 " _|--/~\\------/~\\-+  "
+#define LWHL42 "//// \\_O========O    "
 
-constexpr const char* LWHL61 = " _|--/~\\------/~\\-+  ";
-constexpr const char* LWHL62 = "//// O========O_/    ";
+#define LWHL51 " _|--/~\\------/~\\-+  "
+#define LWHL52 "//// \\O========O/    "
 
-constexpr const char* LCOAL1 = "____                 ";
-constexpr const char* LCOAL2 = "|   \\@@@@@@@@@@@     ";
-constexpr const char* LCOAL3 = "|    \\@@@@@@@@@@@@@_ ";
-constexpr const char* LCOAL4 = "|                  | ";
-constexpr const char* LCOAL5 = "|__________________| ";
-constexpr const char* LCOAL6 = "   (O)       (O)     ";
+#define LWHL61 " _|--/~\\------/~\\-+  "
+#define LWHL62 "//// O========O_/    "
 
-constexpr const char* LCAR1 = "____________________ ";
-constexpr const char* LCAR2 = "|  ___ ___ ___ ___ | ";
-constexpr const char* LCAR3 = "|  |_| |_| |_| |_| | ";
-constexpr const char* LCAR4 = "|__________________| ";
-constexpr const char* LCAR5 = "|__________________| ";
-constexpr const char* LCAR6 = "   (O)        (O)    ";
+#define LCOAL1 "____                 "
+#define LCOAL2 "|   \\@@@@@@@@@@@     "
+#define LCOAL3 "|    \\@@@@@@@@@@@@@_ "
+#define LCOAL4 "|                  | "
+#define LCOAL5 "|__________________| "
+#define LCOAL6 "   (O)       (O)     "
 
-constexpr const char* DELLN = "                     ";
+#define LCAR1  "____________________ "
+#define LCAR2  "|  ___ ___ ___ ___ | "
+#define LCAR3  "|  |_| |_| |_| |_| | "
+#define LCAR4  "|__________________| "
+#define LCAR5  "|__________________| "
+#define LCAR6  "   (O)        (O)    "
 
-constexpr int C51HEIGHT = 11;
-constexpr int C51FUNNEL = 7;
-constexpr int C51LENGTH = 87;
-constexpr int C51PATTERNS = 6;
+#define DELLN  "                     "
 
-constexpr const char* C51DEL = "                                                       =";
+#define C51HEIGHT 11
+#define C51FUNNEL 7
+#define C51LENGTH 87
+#define C51PATTERNS 6
 
-constexpr const char* C51STR1 = "        ___                                            =";
-constexpr const char* C51STR2 = "       _|_|_  _     __       __             ___________=";
-constexpr const char* C51STR3 = "    D__/   \\_(_)___|  |__H__|  |_____I_Ii_()|_________|=";
-constexpr const char* C51STR4 = "     | `---'   |:: `--'  H  `--'         |  |___ ___|  =";
-constexpr const char* C51STR5 = "    +|~~~~~~~~++::~~~~~~~H~~+=====+~~~~~~|~~||_| |_||  =";
-constexpr const char* C51STR6 = "    ||        | ::       H  +=====+      |  |::  ...|  =";
-constexpr const char* C51STR7 = "|    | _______|_::-----------------[][]-----|       |  =";
+#define C51DEL "                                                       "
 
-constexpr const char* C51WH61 = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__=";
-constexpr const char* C51WH62 = "------'|oOo|==[]=-     ||      ||      |  ||=======_|__=";
-constexpr const char* C51WH63 = "/~\\____|___|/~\\_|   O=======O=======O  |__|+-/~\\_|     =";
-constexpr const char* C51WH64 = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       =";
+#define C51STR1 "        ___                                            "
+#define C51STR2 "       _|_|_  _     __       __             ___________"
+#define C51STR3 "    D__/   \\_(_)___|  |__H__|  |_____I_Ii_()|_________|"
+#define C51STR4 "     | `---'   |:: `--'  H  `--'         |  |___ ___|  "
+#define C51STR5 "    +|~~~~~~~~++::~~~~~~~H~~+=====+~~~~~~|~~||_| |_||  "
+#define C51STR6 "    ||        | ::       H  +=====+      |  |::  ...|  "
+#define C51STR7 "|    | _______|_::-----------------[][]-----|       |  "
 
-constexpr const char* C51WH51 = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__=";
-constexpr const char* C51WH52 = "------'|oOo|===[]=-    ||      ||      |  ||=======_|__=";
-constexpr const char* C51WH53 = "/~\\____|___|/~\\_|    O=======O=======O |__|+-/~\\_|     =";
-constexpr const char* C51WH54 = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       =";
+#define C51WH61 "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__"
+#define C51WH62 "------'|oOo|==[]=-     ||      ||      |  ||=======_|__"
+#define C51WH63 "/~\\____|___|/~\\_|   O=======O=======O  |__|+-/~\\_|     "
+#define C51WH64 "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       "
 
-constexpr const char* C51WH41 = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__=";
-constexpr const char* C51WH42 = "------'|oOo|===[]=- O=======O=======O  |  ||=======_|__=";
-constexpr const char* C51WH43 = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     =";
-constexpr const char* C51WH44 = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       =";
+#define C51WH51 "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__"
+#define C51WH52 "------'|oOo|===[]=-    ||      ||      |  ||=======_|__"
+#define C51WH53 "/~\\____|___|/~\\_|    O=======O=======O |__|+-/~\\_|     "
+#define C51WH54 "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       "
 
-constexpr const char* C51WH31 = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__=";
-constexpr const char* C51WH32 = "------'|oOo|==[]=- O=======O=======O   |  ||=======_|__=";
-constexpr const char* C51WH33 = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     =";
-constexpr const char* C51WH34 = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       =";
+#define C51WH41 "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__"
+#define C51WH42 "------'|oOo|===[]=- O=======O=======O  |  ||=======_|__"
+#define C51WH43 "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     "
+#define C51WH44 "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       "
 
-constexpr const char* C51WH21 = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__=";
-constexpr const char* C51WH22 = "------'|oOo|=[]=- O=======O=======O    |  ||=======_|__=";
-constexpr const char* C51WH23 = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     =";
-constexpr const char* C51WH24 = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       =";
+#define C51WH31 "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__"
+#define C51WH32 "------'|oOo|==[]=- O=======O=======O   |  ||=======_|__"
+#define C51WH33 "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     "
+#define C51WH34 "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       "
 
-constexpr const char* C51WH11 = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__=";
-constexpr const char* C51WH12 = "------'|oOo|=[]=-      ||      ||      |  ||=======_|__=";
-constexpr const char* C51WH13 = "/~\\____|___|/~\\_|  O=======O=======O   |__|+-/~\\_|     =";
-constexpr const char* C51WH14 = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       =";
+#define C51WH21 "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__"
+#define C51WH22 "------'|oOo|=[]=- O=======O=======O    |  ||=======_|__"
+#define C51WH23 "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     "
+#define C51WH24 "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       "
+
+#define C51WH11 "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__"
+#define C51WH12 "------'|oOo|=[]=-      ||      ||      |  ||=======_|__"
+#define C51WH13 "/~\\____|___|/~\\_|  O=======O=======O   |__|+-/~\\_|     "
+#define C51WH14 "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       "
