@@ -16,7 +16,7 @@ std::array healthy_messages {
     "Damn look at them smooth jiggle physics",
     "I will personally crash this train in your house",
     "This train is powered by your CPU",
-    "This train runs on the famous                   engine!",
+    "This train runs on the famous '                 ' engine!",
     "Next stop: Your house",
     "This train is faster than your internet connection",
     "C++: Making trains run since 1998",

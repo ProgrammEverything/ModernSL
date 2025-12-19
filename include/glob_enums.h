@@ -43,6 +43,7 @@ struct TrainDrawingInformation {
     int wheels_speed=2;
     int tile_drawing_offset=0;
     bool draw_tracks=true;
+    bool draw_extended=false;
 };
 
 // Tiles which are like plain times however animated (e.g. each frame has its own texture)

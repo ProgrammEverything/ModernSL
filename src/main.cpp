@@ -21,16 +21,20 @@ Basic structure:
 */
 
 constexpr int TRAIN_TRACKS_HEIGHT = 1;
-constexpr int MESSAGE_HEIGHT = 3;
+constexpr int MESSAGE_HEIGHT = 7;
 int main(int argc, char** argv){
-    std::mt19937 gen;
-    std::uniform_int_distribution<int> swi(0, 10000);
-    if (swi(gen) == 1567){
-        system("ls"); // 1 in a 10,000 chance to happen
+    std::random_device rd;  // Hardware entropy source
+    std::mt19937 gen(rd()); // Seed the engine once
+    std::uniform_int_distribution<int> swi(0, 5);
+    std::uniform_int_distribution<int> swi_rare(0, 100);
+
+    if (swi_rare(gen) == swi_rare(gen)){
+        system("ls"); // idk how much chance this has tbh?
         return 0;
     }
+
     args::ArgumentParser parser("Train animation in terminal using ncurses", "Sometimes may print current directory. Who knows?");
-    args::ValueFlag<int> speedArg(parser, "speed", "Speed of the train animation. Higher is faster. Default is 2", {'s', "speed"}, 2);
+    args::ValueFlag<int> speedArg(parser, "speed", "Speed of the train animation. Lower is faster. Default is 2", {'s', "speed"}, 2);
     args::ValueFlag<int> offsetArg(parser, "offset", "Offset of each cart. Default is 0", {'w', "offset"}, 0);
     args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
     args::ValueFlag<int> framespeedArg(parser, "framespeed", "Time spent between each frame (in microseconds). Default is 20000", {'f', "framespeed"}, 20000);
@@ -40,6 +44,7 @@ int main(int argc, char** argv){
     args::Flag eraseArg(parser, "erase", "Erase terminal? Recommended to use with [adjust]", {'e', "erase"});
     args::Flag signalArg(parser, "signal", "Disable default-behaviour 'Ignore INT signal' Not recommended!", {'i', "signal"});
     args::Flag trainArg(parser, "traintracks", "Disable default-behaviour 'Show train tracks'",{'t', "traintracks"} );
+    args::Flag drawArg(parser, "drawextended", "Draw extended train?",{'d', "drawextended"} );
 
     args::ValueFlag loopforArg(parser, "loopfor", "Loop until. Default is 0", {'u', "loopfor"}, 0);
     
@@ -82,6 +87,15 @@ int main(int argc, char** argv){
         .col = COLS
     };
         
+
+    if (curSize < TerminalSize{
+        .line=LOGOHEIGHT + TRAIN_TRACKS_HEIGHT + MESSAGE_HEIGHT,
+        .col=LOGOLENGTH 
+    }) {
+        endwin();
+        std::cerr << "Error: " << std::format("Terminal size too small. Minimum size is {}x{}", LOGOLENGTH, LOGOHEIGHT + TRAIN_TRACKS_HEIGHT + MESSAGE_HEIGHT);
+        return 1;
+    }
     auto longest = std::max_element(
         healthy_messages.begin(),
         healthy_messages.end(),
@@ -89,14 +103,6 @@ int main(int argc, char** argv){
             return strlen(a) < strlen(b);
         }
     );
-    if (curSize < TerminalSize{
-        .line=LOGOHEIGHT + TRAIN_TRACKS_HEIGHT + MESSAGE_HEIGHT,
-        .col=LOGOLENGTH 
-    }) {
-        endwin();
-        std::cerr << "Error: " << std::format("Terminal size too small. Minimum size is {}x{}", LOGOLENGTH + (int)strlen(*longest), LOGOHEIGHT + TRAIN_TRACKS_HEIGHT + MESSAGE_HEIGHT);
-        return 1;
-    }
     func.getXPos = [&]() {
         if (adjustableArg.Get()){
             return COLS;
@@ -114,8 +120,6 @@ int main(int argc, char** argv){
     TrainDrawingInformation info {
         .wheels_speed = speedArg.Get(),
         .tile_drawing_offset = offsetArg.Get(),
-        .draw_tracks = !trainArg.Get(),
-        
     };
 
     int speed = framespeedArg.Get();
@@ -124,9 +128,12 @@ int main(int argc, char** argv){
     std::uniform_int_distribution<int> dist(0, healthy_messages.size() - 1);
 
     do {
+
+        info.draw_tracks = !(trainArg.Get() || (swi(gen) == swi(gen)));
+        info.draw_extended = drawArg.Get() || swi(gen) == swi(gen);
         int index = dist(gen);
         while (true){
-        if (t.Draw(i,healthy_messages[index], info) == ERR) {i=0;break;};
+            if (t.Draw(i,std::format("Train number: {}\n{}",time_spent+1, healthy_messages[index]).c_str(), info) == ERR) {i=0;break;};
             refresh();
             getch();
             usleep(speed);
@@ -137,7 +144,6 @@ int main(int argc, char** argv){
             i++;
         }
         time_spent++;
-        
     }
     while (loopArg.Get() || (time_spent < loopforArg.Get()));
 
