@@ -3,14 +3,13 @@
 
 class Train {
 public:
-    Train(Layout calc_layout);
+    Train();
 
-    int Draw(int delay, TrainDrawingInformation info);
-    int DrawBody(int x_pos, int cur_line, int frame, TrainDrawingInformation drawInfo);
-    int DrawTracks(int x_pos, int cur_line);
-    int DrawSmoke(int y_pos, int x_pos);
+    int Draw();
+    int DrawBody(int x);
+    int DrawSmoke();
+
 private:
     TrainParameters m_params{};
-    
-    Layout m_calc_layout;
+    TerminalSize m_termSize{};
 };
