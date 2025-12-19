@@ -61,24 +61,24 @@ constexpr const char* COALDEL = "                              =";
 constexpr const char* LOGO1 = "     ++      +------ ";
 constexpr const char* LOGO2 = "     ||      |+-+ |  ";
 constexpr const char* LOGO3 = "   /---------|| | |  ";
-constexpr const char* LOGO4 = "  + ========  +-+ |  ";
+constexpr const char* LOGO4 = "  / ========  +-+ |  ";
 
-constexpr const char* LWHL11 = " _|--O========O~\\-+  ";
+constexpr const char* LWHL11 = " /---O========O~\\-+  ";
 constexpr const char* LWHL12 = "//// \\_/      \\_/    ";
 
-constexpr const char* LWHL21 = " _|--/O========O\\-+  ";
+constexpr const char* LWHL21 = " /---/O========O\\-+  ";
 constexpr const char* LWHL22 = "//// \\_/      \\_/    ";
 
-constexpr const char* LWHL31 = " _|--/~O========O-+  ";
+constexpr const char* LWHL31 = " /---/~O========O-+  ";
 constexpr const char* LWHL32 = "//// \\_/      \\_/    ";
 
-constexpr const char* LWHL41 = " _|--/~\\------/~\\-+  ";
+constexpr const char* LWHL41 = " /---/~\\------/~\\-+  ";
 constexpr const char* LWHL42 = "//// \\_O========O    ";
 
-constexpr const char* LWHL51 = " _|--/~\\------/~\\-+  ";
+constexpr const char* LWHL51 = " /---/~\\------/~\\-+  ";
 constexpr const char* LWHL52 = "//// \\O========O/    ";
 
-constexpr const char* LWHL61 = " _|--/~\\------/~\\-+  ";
+constexpr const char* LWHL61 = " /---/~\\------/~\\-+  ";
 constexpr const char* LWHL62 = "//// O========O_/    ";
 
 constexpr const char* LCOAL1 = "____                 ";
