@@ -1,4 +1,3 @@
-## THIS IS A DEVELOPEMENT BRANCH. THIS FILE IS UPDATED MORE REGULARLY. For official documentation please visit the main branch (build instructions - etc...)
 # ModernSL
 
 The ModernSL command provides a new - modern way to approach the "sl" command from linux. With more documentation. Command help and also many more eastereggs.
