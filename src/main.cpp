@@ -23,6 +23,12 @@ Basic structure:
 constexpr int TRAIN_TRACKS_HEIGHT = 1;
 constexpr int MESSAGE_HEIGHT = 3;
 int main(int argc, char** argv){
+    std::mt19937 gen;
+    std::uniform_int_distribution<int> swi(0, 10000);
+    if (swi(gen) == 1567){
+        system("ls"); // 1 in a 10,000 chance to happen
+        return 0;
+    }
     args::ArgumentParser parser("Train animation in terminal using ncurses", "Sometimes may print current directory. Who knows?");
     args::ValueFlag<int> speedArg(parser, "speed", "Speed of the train animation. Higher is faster. Default is 2", {'s', "speed"}, 2);
     args::ValueFlag<int> offsetArg(parser, "offset", "Offset of each cart. Default is 0", {'w', "offset"}, 0);
@@ -115,15 +121,12 @@ int main(int argc, char** argv){
     int speed = framespeedArg.Get();
     int time_spent = 0;
 
-    std::mt19937 gen;                 // Mersenne Twister engine
     std::uniform_int_distribution<int> dist(0, healthy_messages.size() - 1);
 
     do {
         int index = dist(gen);
         while (true){
-// healthy_messages.at(index)
-
-    if (t.Draw(i,healthy_messages[index], info) == ERR) {i=0;break;};
+        if (t.Draw(i,healthy_messages[index], info) == ERR) {i=0;break;};
             refresh();
             getch();
             usleep(speed);
