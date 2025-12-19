@@ -68,7 +68,6 @@ Inside the loop:
 */
 int Train::DrawBody(int x_pos, int cur_line, int frame, TrainDrawingInformation drawInfo)
 {
-    
     static std::array<std::array<const char*, LOGOHEIGHT + 1>, LOGOPATTERNS> train_texture
     = {{
         {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL11, LWHL12, DELLN }},
@@ -78,50 +77,73 @@ int Train::DrawBody(int x_pos, int cur_line, int frame, TrainDrawingInformation 
         {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL51, LWHL52, DELLN }},
         {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL61, LWHL62, DELLN }}
       }};
-    std::array<const char*, LOGOHEIGHT+1> coal
+    std::array<const char*, LOGOHEIGHT+1> lcoal
         = {LCOAL1, LCOAL2, LCOAL3, LCOAL4, LCOAL5, LCOAL6, DELLN};
-
+    std::array<const char*, LOGOHEIGHT+1> coal
+        = {COAL03, COAL04, COAL06, COAL07, COAL08, COAL10, DELLN};
     static std::array<const char*, LOGOHEIGHT + 1> car
         = {LCAR1, LCAR2, LCAR3, LCAR4, LCAR5, LCAR6, DELLN};
 
-    // int y, py1 = 0, py2 = 0, py3 = 0;
-
-    // compute the on-screen x for this frame (start at x_pos, move left as frame increases)
+    // compute the on-screen x for this frame
     int draw_x = x_pos - frame;
-    // fully off-screen to the left?
-    
-    if (!drawInfo.draw_extended && draw_x < -LOGOLENGTH - (1 + drawInfo.tile_drawing_offset * 3) )  return ERR;
-    if (drawInfo.draw_extended && draw_x < -LOGOLENGTH*4 - drawInfo.tile_drawing_offset*15 - 1 ) return ERR;
-    
+
+    // keep the old early-exit behaviour (train fully off left)
+    if (!drawInfo.draw_extended && draw_x < -LOGOLENGTH - LOGOHEIGHT + 1 - (1 + drawInfo.tile_drawing_offset * 3))
+        return ERR;
+    if (drawInfo.draw_extended && draw_x < -LOGOLENGTH*5 - drawInfo.tile_drawing_offset*15 - 1)
+        return ERR;
+
     int y = (cur_line / 2) - (LOGOHEIGHT / 2);
 
-    // choose a pattern based on frame to animate wheels; tweak divisor to change speed
     int pat = (frame / drawInfo.wheels_speed) % LOGOPATTERNS;
     if (pat < 0) pat += LOGOPATTERNS;
 
+    // tile placement parameters
+    constexpr int TILE_W = 21; // width used previously
+    int stride = TILE_W + drawInfo.tile_drawing_offset;
+    int first_tile_x = draw_x + TILE_W; // tile 0 sits right after the locomotive
+
     for (int lvl = 0; lvl <= LOGOHEIGHT; lvl++) {
-        
-        my_mvaddstr(y + lvl, draw_x,
-            train_texture.at(pat).at(lvl));
-        my_mvaddstr(y + lvl , draw_x + 21 + drawInfo.tile_drawing_offset, coal[lvl]);
-        my_mvaddstr(y + lvl , draw_x + 21*2 + drawInfo.tile_drawing_offset * 2, car.at(lvl));
-        my_mvaddstr(y + lvl , draw_x + 21*3 + drawInfo.tile_drawing_offset * 3, car.at(lvl));
-        if (drawInfo.draw_extended){
-            my_mvaddstr(y + lvl , draw_x + 21*4 + drawInfo.tile_drawing_offset * 4, coal[lvl]);
-            my_mvaddstr(y + lvl , draw_x + 21*5 + drawInfo.tile_drawing_offset * 5, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*6 + drawInfo.tile_drawing_offset * 6, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*7 + drawInfo.tile_drawing_offset * 7, coal[lvl]);
-            my_mvaddstr(y + lvl , draw_x + 21*8 + drawInfo.tile_drawing_offset * 8, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*9 + drawInfo.tile_drawing_offset * 9, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*10+ drawInfo.tile_drawing_offset * 10, coal[lvl]);
-            my_mvaddstr(y + lvl , draw_x + 21*11+ drawInfo.tile_drawing_offset * 11, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*12+ drawInfo.tile_drawing_offset * 12, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*13+ drawInfo.tile_drawing_offset * 13, coal[lvl]);
-            my_mvaddstr(y + lvl , draw_x + 21*14+ drawInfo.tile_drawing_offset * 14, car.at(lvl));
-            my_mvaddstr(y + lvl , draw_x + 21*15+ drawInfo.tile_drawing_offset * 15, car.at(lvl));
+        // draw locomotive pattern row
+        my_mvaddstr(y + lvl, draw_x, train_texture.at(pat).at(lvl));
+
+        // build the ordered sequence of wagon pieces for this row
+        std::array<const char*, 32> tiles{}; // plenty of room
+        int tile_count = 0;
+
+        // base composition (non-extended): local coal, coal, car, car, coal
+        tiles[tile_count++] = lcoal[lvl];                     // tile 0
+        tiles[tile_count++] = coal[lvl];                      // tile 1
+        tiles[tile_count++] = car.at(lvl);                    // tile 2
+        tiles[tile_count++] = car.at(lvl);                    // tile 3
+        tiles[tile_count++] = coal.at(lvl);                   // tile 4
+
+        // extend with additional repeating pattern if requested
+        if (drawInfo.draw_extended) {
+            // append additional sequence that mirrors original intent but computed sequentially
+            tiles[tile_count++] = lcoal[lvl];
+            tiles[tile_count++] = car.at(lvl);
+            tiles[tile_count++] = coal.at(lvl);
+            tiles[tile_count++] = car.at(lvl);
+            tiles[tile_count++] = lcoal[lvl];
+            tiles[tile_count++] = coal.at(lvl);
+            tiles[tile_count++] = car.at(lvl);
+            tiles[tile_count++] = car.at(lvl);
+            tiles[tile_count++] = lcoal[lvl];
+            tiles[tile_count++] = coal.at(lvl);
+            tiles[tile_count++] = car.at(lvl);
+            tiles[tile_count++] = car.at(lvl);
+            // you can extend this list further if needed; this preserves relative order
+        }
+
+        // draw each tile at computed positions (keeps math simple and consistent)
+        for (int t = 0; t < tile_count; ++t) {
+            int tx = first_tile_x + t * stride;
+            my_mvaddstr(y + lvl, tx, tiles[t]);
         }
     }
-    // enable smoke drawing using the per-frame draw_x
+
+    // smoke kept commented out in current file; re-enable if desired
     // DrawSmoke(y - 1, draw_x + LOGOFUNNEL);
     return OK;
 }

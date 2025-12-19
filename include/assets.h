@@ -44,18 +44,18 @@ constexpr const char* D51WHL63 = "  \\_/      \\_O=====O=====O=====O/      \\_/ 
 
 constexpr const char* D51DEL  = "                                                      =";
 
-constexpr const char* COAL01 = "                              =";
-constexpr const char* COAL02 = "                              =";
-constexpr const char* COAL03 = "    _________________         =";
-constexpr const char* COAL04 = "   _|                \\_____A  =";
-constexpr const char* COAL05 = " =|                        |  =";
-constexpr const char* COAL06 = " -|                        |  =";
-constexpr const char* COAL07 = "__|________________________|_ =";
-constexpr const char* COAL08 = "|__________________________|_ =";
-constexpr const char* COAL09 = "   |_D__D__D_|  |_D__D__D_|   =";
-constexpr const char* COAL10 = "    \\_/   \\_/    \\_/   \\_/    =";
+constexpr const char* COAL01 = "                              ";
+constexpr const char* COAL02 = "                              ";
+constexpr const char* COAL03 = "    _________________         ";
+constexpr const char* COAL04 = "   _|                \\_____A ";
+constexpr const char* COAL05 = " =|                        |  ";
+constexpr const char* COAL06 = " -|                        |  ";
+constexpr const char* COAL07 = "__|________________________|_ ";
+constexpr const char* COAL08 = "|__________________________|_ ";
+constexpr const char* COAL09 = "   |_D__D__D_|  |_D__D__D_|   ";
+constexpr const char* COAL10 = "    \\_/   \\_/    \\_/   \\_/ ";
 
-constexpr const char* COALDEL = "                              =";
+constexpr const char* COALDEL = "                             ";
 
 
 constexpr const char* LOGO1 = "     ++      +------ ";
