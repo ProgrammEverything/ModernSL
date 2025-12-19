@@ -4,8 +4,9 @@
 #include "ncurses.h"
 #include <iostream>
 #include <unistd.h>
-Train::Train(TerminalSize termSize, Layout calc_layout)
-    : m_termSize(termSize), m_calc_layout(calc_layout)
+#include <array>
+Train::Train(Layout calc_layout)
+    : m_calc_layout(calc_layout)
 {
 }
 int my_mvaddstr(int y, int x, const char *str)
@@ -21,11 +22,15 @@ int my_mvaddstr(int y, int x, const char *str)
     return OK;
 }
 
-int Train::Draw(int frame)
+int Train::Draw(int frame, TrainDrawingInformation info)
 {
 
-    DrawBody( m_calc_layout.getXPos(),m_calc_layout.getYPos(),  frame);
-    
+    if (DrawBody( m_calc_layout.getXPos(),m_calc_layout.getYPos(),  frame, info) == ERR) return ERR ;
+    if (info.draw_tracks){ 
+    if (DrawTracks(m_calc_layout.getXPos(), m_calc_layout.getYPos()) == ERR) {
+        return ERR;
+    }
+    }
     return OK;
 }
 /*
@@ -39,46 +44,59 @@ A for loop iterates through each level (or row) of the train's height (from 0 to
 Inside the loop:
 
 */
-int Train::DrawBody(int x_pos, int cur_line, int frame)
+int Train::DrawBody(int x_pos, int cur_line, int frame, TrainDrawingInformation drawInfo)
 {
-    static char *train_texture[LOGOPATTERNS][LOGOHEIGHT + 1]
-        = {{LOGO1, LOGO2, LOGO3, LOGO4, LWHL11, LWHL12, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL21, LWHL22, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL31, LWHL32, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL41, LWHL42, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL51, LWHL52, DELLN},
-           {LOGO1, LOGO2, LOGO3, LOGO4, LWHL61, LWHL62, DELLN}};
-
-    static char *coal[LOGOHEIGHT + 1]
+    
+    static std::array<std::array<const char*, LOGOHEIGHT + 1>, LOGOPATTERNS> train_texture
+    = {{
+        {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL11, LWHL12, DELLN }},
+        {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL21, LWHL22, DELLN }},
+        {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL31, LWHL32, DELLN }},
+        {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL41, LWHL42, DELLN }},
+        {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL51, LWHL52, DELLN }},
+        {{ LOGO1, LOGO2, LOGO3, LOGO4, LWHL61, LWHL62, DELLN }}
+      }};
+    std::array<const char*, LOGOHEIGHT+1> coal
         = {LCOAL1, LCOAL2, LCOAL3, LCOAL4, LCOAL5, LCOAL6, DELLN};
 
-    static char *car[LOGOHEIGHT + 1]
+    static std::array<const char*, LOGOHEIGHT + 1> car
         = {LCAR1, LCAR2, LCAR3, LCAR4, LCAR5, LCAR6, DELLN};
 
-    int y, py1 = 0, py2 = 0, py3 = 0;
+    // int y, py1 = 0, py2 = 0, py3 = 0;
 
     // compute the on-screen x for this frame (start at x_pos, move left as frame increases)
     int draw_x = x_pos - frame;
     // fully off-screen to the left?
-    if (draw_x < -LOGOLENGTH)  return ERR;
+    if (draw_x < -LOGOLENGTH - (1 + drawInfo.tile_drawing_offset * 3) )  return ERR;
 
-    y = (cur_line / 2) - (LOGOHEIGHT / 2);
+    int y = (cur_line / 2) - (LOGOHEIGHT / 2);
 
     // choose a pattern based on frame to animate wheels; tweak divisor to change speed
-    int pat = (frame / 3) % LOGOPATTERNS;
+    int pat = (frame / drawInfo.wheels_speed) % LOGOPATTERNS;
     if (pat < 0) pat += LOGOPATTERNS;
 
     for (int lvl = 0; lvl <= LOGOHEIGHT; lvl++) {
+        
         my_mvaddstr(y + lvl, draw_x,
-            train_texture[pat][lvl]);
-        my_mvaddstr(y + lvl + py1, draw_x + 21, coal[lvl]);
-        my_mvaddstr(y + lvl + py1, draw_x + 21 + 7, std::format("{}", frame).c_str());
-        my_mvaddstr(y + lvl + py2, draw_x + 42, car[lvl]);
-        my_mvaddstr(y + lvl + py3, draw_x + 63, car[lvl]);
+            train_texture.at(pat).at(lvl));
+        my_mvaddstr(y + lvl , draw_x + 21 + drawInfo.tile_drawing_offset, coal[lvl]);
+        my_mvaddstr(y + lvl , draw_x + 42 + drawInfo.tile_drawing_offset * 2, car.at(lvl));
+
+        if (my_mvaddstr(y + lvl , draw_x + 63 + drawInfo.tile_drawing_offset * 3, car.at(lvl))){
+        }
     }
     // enable smoke drawing using the per-frame draw_x
-    DrawSmoke(y - 1, draw_x + LOGOFUNNEL);
+    // DrawSmoke(y - 1, draw_x + LOGOFUNNEL);
     return OK;
+}
+int Train::DrawTracks(int x_pos, int cur_line)
+{
+    int y = (cur_line / 2) - (LOGOHEIGHT / 2);
+
+    for (int x=0; x<=x_pos; x++){
+        my_mvaddstr(y + LOGOHEIGHT, x, "-");
+    }
+    return 0;
 }
 int Train::DrawSmoke(int y_pos, int x_pos)
 {

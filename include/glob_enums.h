@@ -2,6 +2,7 @@
 #include <functional>
 #include <random>
 #include <iostream>
+#include <assets.h>
 enum class TrainParameters {
     TRAIN_ACCIDENT,
     TRAIN_LOGO,
@@ -24,9 +25,29 @@ struct Smoke {
 struct TerminalSize {
     int line;
     int col;
+    bool operator>=(const TerminalSize& other){
+        return (this->line >= other.line || this->col >= other.col);
+    }
+    bool operator<(const TerminalSize& other){
+        return (this->line < other.line || this->col < other.col);
+    }
 };
 
 struct Layout {
     std::function<int(void)> getXPos;
     std::function<int(void)> getYPos;
+};
+
+struct TrainDrawingInformation {
+    int wheels_speed;
+    int tile_drawing_offset;
+    bool draw_tracks = true;
+};
+// Tiles which are like plain times however animated (e.g. each frame has its own texture)
+struct AnimatedTile {
+    std::array<std::array<const char*, LOGOHEIGHT + 1>, LOGOPATTERNS> texture;  
+};
+// Tiles which are plain without much details - e.g. rendered per line
+struct LineDepTile {
+    std::array<const char*, LOGOHEIGHT+1> coal;
 };
