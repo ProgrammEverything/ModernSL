@@ -9,10 +9,6 @@
  *========================================
  */
 
-constexpr int D51HEIGHT = 10;
-constexpr int D51FUNNEL = 7;
-constexpr int D51LENGTH = 83;
-constexpr int D51PATTERNS = 6;
 
 constexpr const char* D51STR1 = "      ====        ________                ___________ =";
 constexpr const char* D51STR2 = "  _D _|  |_______/        \\__I_I_____===__|_________| =";
@@ -61,10 +57,6 @@ constexpr const char* COAL10 = "    \\_/   \\_/    \\_/   \\_/    =";
 
 constexpr const char* COALDEL = "                              =";
 
-constexpr int LOGOHEIGHT = 6;
-constexpr int LOGOFUNNEL = 4;
-constexpr int LOGOLENGTH = 84;
-constexpr int LOGOPATTERNS = 6;
 
 constexpr const char* LOGO1 = "     ++      +------ ";
 constexpr const char* LOGO2 = "     ||      |+-+ |  ";
@@ -105,10 +97,6 @@ constexpr const char* LCAR6 = "   (O)        (O)    ";
 
 constexpr const char* DELLN = "                     ";
 
-constexpr int C51HEIGHT = 11;
-constexpr int C51FUNNEL = 7;
-constexpr int C51LENGTH = 87;
-constexpr int C51PATTERNS = 6;
 
 constexpr const char* C51DEL = "                                                       =";
 

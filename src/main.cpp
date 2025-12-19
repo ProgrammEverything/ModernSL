@@ -7,7 +7,11 @@
 #include <signal.h>
 #include <unistd.h>
 #include <args.hxx>
-#include "assets.h"
+#include "consts.h"
+#include <cstring>
+#include <string>
+#include <random>
+#include "prompts.h"
 /*
 Basic structure:
     The train is drawn using a for loop which loops through reverse of x.
@@ -15,6 +19,9 @@ Basic structure:
         Starting at the most highest COL in the terminal.
 
 */
+
+constexpr int TRAIN_TRACKS_HEIGHT = 1;
+constexpr int MESSAGE_HEIGHT = 3;
 int main(int argc, char** argv){
     args::ArgumentParser parser("Train animation in terminal using ncurses", "Sometimes may print current directory. Who knows?");
     args::ValueFlag<int> speedArg(parser, "speed", "Speed of the train animation. Higher is faster. Default is 2", {'s', "speed"}, 2);
@@ -27,7 +34,7 @@ int main(int argc, char** argv){
     args::Flag eraseArg(parser, "erase", "Erase terminal? Recommended to use with [adjust]", {'e', "erase"});
     args::Flag signalArg(parser, "signal", "Disable default-behaviour 'Ignore INT signal' Not recommended!", {'i', "signal"});
     args::Flag trainArg(parser, "traintracks", "Disable default-behaviour 'Show train tracks'",{'t', "traintracks"} );
-    
+
     args::ValueFlag loopforArg(parser, "loopfor", "Loop until. Default is 0", {'u', "loopfor"}, 0);
     
     try {
@@ -48,6 +55,9 @@ int main(int argc, char** argv){
         return 1;
     }
 
+
+
+
     initscr();
     if (!signalArg.Get()){
         signal(SIGINT, SIG_IGN);
@@ -59,17 +69,26 @@ int main(int argc, char** argv){
     scrollok(stdscr, FALSE);
 
     int i = 0;
+    
     Layout func;
     TerminalSize curSize {
         .line = LINES,
         .col = COLS
     };
+        
+    auto longest = std::max_element(
+        healthy_messages.begin(),
+        healthy_messages.end(),
+        [](const char* a, const char* b) {
+            return strlen(a) < strlen(b);
+        }
+    );
     if (curSize < TerminalSize{
-        .line=LOGOHEIGHT + 1,
-        .col=LOGOLENGTH
+        .line=LOGOHEIGHT + TRAIN_TRACKS_HEIGHT + MESSAGE_HEIGHT,
+        .col=LOGOLENGTH 
     }) {
         endwin();
-        std::cerr << "Error: " << std::format("Terminal size too small. Minimum size is {}x{}", LOGOLENGTH, LOGOHEIGHT + 1);
+        std::cerr << "Error: " << std::format("Terminal size too small. Minimum size is {}x{}", LOGOLENGTH + (int)strlen(*longest), LOGOHEIGHT + TRAIN_TRACKS_HEIGHT + MESSAGE_HEIGHT);
         return 1;
     }
     func.getXPos = [&]() {
@@ -80,11 +99,12 @@ int main(int argc, char** argv){
     };
     func.getYPos = [&]() {
         if (adjustableArg.Get()){
-            return LINES;
+            return  LINES;
         }
         return curSize.line;
     };
-    Train t(func);
+    TrainParameters params = TrainParameters::NON;
+    Train t(func, params);
     TrainDrawingInformation info {
         .wheels_speed = speedArg.Get(),
         .tile_drawing_offset = offsetArg.Get(),
@@ -94,10 +114,16 @@ int main(int argc, char** argv){
 
     int speed = framespeedArg.Get();
     int time_spent = 0;
-    do {
-        while (true){
-            if (t.Draw(i, info) == ERR) {i=0;break;};
 
+    std::mt19937 gen;                 // Mersenne Twister engine
+    std::uniform_int_distribution<int> dist(0, healthy_messages.size() - 1);
+
+    do {
+        int index = dist(gen);
+        while (true){
+// healthy_messages.at(index)
+
+    if (t.Draw(i,healthy_messages[index], info) == ERR) {i=0;break;};
             refresh();
             getch();
             usleep(speed);

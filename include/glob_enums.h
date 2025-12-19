@@ -3,11 +3,12 @@
 #include <random>
 #include <iostream>
 #include <assets.h>
-enum class TrainParameters {
-    TRAIN_ACCIDENT,
-    TRAIN_LOGO,
-    TRAIN_FLY
+#include "consts.h"
+enum TrainParameters {
+    TRAIN_DRAW_TRACKS=2,
+    NON=0
 };
+
 struct Smoke {
     int y, x;
     int ptrn, kind;
@@ -39,10 +40,11 @@ struct Layout {
 };
 
 struct TrainDrawingInformation {
-    int wheels_speed;
-    int tile_drawing_offset;
-    bool draw_tracks = true;
+    int wheels_speed=2;
+    int tile_drawing_offset=0;
+    bool draw_tracks=true;
 };
+
 // Tiles which are like plain times however animated (e.g. each frame has its own texture)
 struct AnimatedTile {
     std::array<std::array<const char*, LOGOHEIGHT + 1>, LOGOPATTERNS> texture;  

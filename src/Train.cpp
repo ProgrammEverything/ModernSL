@@ -1,35 +1,56 @@
 #include "Train.h"
 #include "assets.h"
+#include "consts.h"
 #include "glob_enums.h"
 #include "ncurses.h"
 #include <iostream>
 #include <unistd.h>
 #include <array>
-Train::Train(Layout calc_layout)
-    : m_calc_layout(calc_layout)
+#include <cstring>
+Train::Train(Layout calc_layout, TrainParameters params)
+    : m_calc_layout(calc_layout), m_params(params)
 {
 }
 int my_mvaddstr(int y, int x, const char *str)
 {
-    while (x < 0) { 
-        x++; str++; 
-        if (*str == '\0')  return ERR;
+    if (str == nullptr) return ERR;
+
+    // skip leading off-screen chars
+    while (x < 0) {
+        x++;
+        str++;
+        if (*str == '\0') {
+            // nothing visible
+            return ERR;
+        }
     }
-    while (*str != '\0'){
-        if (mvaddch(y, x, *str) == ERR)  return ERR;
-        str++, x++;
+
+    // draw until terminator or error
+    while (*str != '\0') {
+        if (mvaddch(y, x, *str) == ERR) {
+            return ERR;
+        }
+        str++;
+        x++;
     }
     return OK;
 }
 
-int Train::Draw(int frame, TrainDrawingInformation info)
+int Train::Draw(int frame, const char* message, TrainDrawingInformation info)
 {
 
-    if (DrawBody( m_calc_layout.getXPos(),m_calc_layout.getYPos(),  frame, info) == ERR) return ERR ;
-    if (info.draw_tracks){ 
-    if (DrawTracks(m_calc_layout.getXPos(), m_calc_layout.getYPos()) == ERR) {
+    if (DrawBody(m_calc_layout.getXPos(), m_calc_layout.getYPos(), frame, info) == ERR) {
         return ERR;
     }
+
+    if (info.draw_tracks) {
+        if (DrawTracks(m_calc_layout.getXPos(), m_calc_layout.getYPos()) == ERR) {
+            return ERR;
+        }
+    }
+
+    if (DrawMessage(m_calc_layout.getXPos(), m_calc_layout.getYPos(), message) == ERR) {
+        return ERR;
     }
     return OK;
 }
@@ -81,9 +102,7 @@ int Train::DrawBody(int x_pos, int cur_line, int frame, TrainDrawingInformation 
             train_texture.at(pat).at(lvl));
         my_mvaddstr(y + lvl , draw_x + 21 + drawInfo.tile_drawing_offset, coal[lvl]);
         my_mvaddstr(y + lvl , draw_x + 42 + drawInfo.tile_drawing_offset * 2, car.at(lvl));
-
-        if (my_mvaddstr(y + lvl , draw_x + 63 + drawInfo.tile_drawing_offset * 3, car.at(lvl))){
-        }
+        my_mvaddstr(y + lvl , draw_x + 63 + drawInfo.tile_drawing_offset * 3, car.at(lvl));
     }
     // enable smoke drawing using the per-frame draw_x
     // DrawSmoke(y - 1, draw_x + LOGOFUNNEL);
@@ -93,10 +112,51 @@ int Train::DrawTracks(int x_pos, int cur_line)
 {
     int y = (cur_line / 2) - (LOGOHEIGHT / 2);
 
-    for (int x=0; x<=x_pos; x++){
-        my_mvaddstr(y + LOGOHEIGHT, x, "-");
+    for (int x=0; x<x_pos; x++){
+        if (my_mvaddstr(y + LOGOHEIGHT, x, "-") == ERR) {return ERR;};
     }
-    return 0;
+    return OK;
+}
+int Train::DrawMessage(int x_pos, int cur_line, const char* message)
+{
+    static int last_length=0;
+    // calculate base line for messages (same as before)
+    int y = (cur_line / 2) - (LOGOHEIGHT / 2);
+
+    // Prepare an erase buffer of MAX_WIDTH spaces (no extra includes needed)
+    char blanks[MAX_WIDTH + 1];
+    std::memset(blanks, ' ', MAX_WIDTH);
+    blanks[MAX_WIDTH] = '\0';
+
+    // clear the message area first (3 lines above train, same layout as drawing)
+    for (int i = 0; i < static_cast<int>(last_length / MAX_WIDTH) + 1; ++i) {
+        // use centered start like the drawing logic: center = x_pos/2, start = center - MAX_WIDTH/2
+        int center = static_cast<int>(x_pos / 2);
+        int erase_startx = center - static_cast<int>(MAX_WIDTH / 2);
+        my_mvaddstr(y - 2 + i, erase_startx, blanks);
+    }
+
+    // if there's no new message, we're done (we already cleared)
+    if (message == nullptr) return OK;
+
+    // draw the new message, splitting into MAX_WIDTH chunks as before
+    size_t len = std::strlen(message);
+    size_t off = 0;
+    int line = 0;
+    while (off < len) {
+        size_t take = (len - off > (size_t)MAX_WIDTH) ? MAX_WIDTH : (len - off);
+        char buf[MAX_WIDTH + 1];
+        std::memcpy(buf, message + off, take);
+        buf[take] = '\0';
+
+        int startx = static_cast<int>(x_pos / 2) - static_cast<int>(take) / 2;
+        my_mvaddstr(y - 2 + line, startx, buf);
+
+        off += take;
+        ++line;
+    }
+    last_length = len;
+    return OK;
 }
 int Train::DrawSmoke(int y_pos, int x_pos)
 {
